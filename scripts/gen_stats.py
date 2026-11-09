@@ -20,8 +20,8 @@ OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
 TOKEN = os.environ["GITHUB_TOKEN"]
 
 THEMES = {
-    "light": {"bg": "#ffffff", "border": "#d0d7de", "title": "#1f2328", "text": "#59636e", "value": "#1f2328", "track": "#eff2f5", "accent": "#7f52ff", "grid": ["#eff2f5", "#d8ccff", "#b39dff", "#8f6bff", "#6a3fe0"]},
-    "dark": {"bg": "#0d1117", "border": "#30363d", "title": "#e6edf3", "text": "#9198a1", "value": "#e6edf3", "track": "#21262d", "accent": "#a98bff", "grid": ["#161b22", "#2e2457", "#4a3591", "#6d4fd1", "#a98bff"]},
+    "light": {"bg": "#ffffff", "border": "#d0d7de", "title": "#1f2328", "text": "#59636e", "value": "#1f2328", "track": "#eff2f5", "accent": "#0969da"},
+    "dark": {"bg": "#0d1117", "border": "#30363d", "title": "#e6edf3", "text": "#9198a1", "value": "#e6edf3", "track": "#21262d", "accent": "#4493f8"},
 }
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans',Helvetica,Arial,sans-serif"
 LANG_COLORS = {
@@ -227,9 +227,9 @@ def main():
     for theme, t in THEMES.items():
         (OUT / f"stats-{theme}.svg").write_text(stats_svg(s, t), encoding="utf-8")
         (OUT / f"langs-{theme}.svg").write_text(langs_svg(s, t), encoding="utf-8")
-        (OUT / f"banner-{theme}.svg").write_text(visuals.banner_svg(s["days"], t, visuals.BANNER[theme]), encoding="utf-8")
+        (OUT / f"header-{theme}.svg").write_text(visuals.header_svg(t, theme), encoding="utf-8")
         for p in visuals.PROJECTS:
-            (OUT / f"project-{p['name'].lower()}-{theme}.svg").write_text(visuals.project_svg(p, t, visuals.BANNER[theme]), encoding="utf-8")
+            (OUT / f"project-{p['name'].lower()}-{theme}.svg").write_text(visuals.project_svg(p, t, theme), encoding="utf-8")
         (OUT / f"highlights-{theme}.svg").write_text(streak_svg(s, t), encoding="utf-8")
     print(json.dumps({"rows": s["rows"], "streak": s["streak"], "langs": s["langs"][:6]}, ensure_ascii=False))
 
