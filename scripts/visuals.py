@@ -6,9 +6,9 @@ from xml.sax.saxutils import escape
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans',Helvetica,Arial,sans-serif"
 
 BANNER = {
-    "light": {"bg1": "#fbfaff", "bg2": "#efe9ff", "glow": "#c9b8ff", "name1": "#5b2fd6", "name2": "#c04fd8",
+    "light": {"name1": "#5b2fd6", "name2": "#c04fd8",
               "text": "#3d3a4f", "muted": "#7a7590", "border": "#e2dcf5"},
-    "dark": {"bg1": "#0d1117", "bg2": "#1b1433", "glow": "#5a3cc2", "name1": "#b79cff", "name2": "#ff8ad8",
+    "dark": {"name1": "#b79cff", "name2": "#ff8ad8",
              "text": "#e6edf3", "muted": "#9198a1", "border": "#2b2346"},
 }
 
@@ -91,14 +91,11 @@ def banner_svg(days, t, b, weeks=15):
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Seongjun Park, Backend Developer">
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{b["bg1"]}"/><stop offset="1" stop-color="{b["bg2"]}"/></linearGradient>
   <linearGradient id="nm" x1="-340" y1="0" x2="0" y2="0" gradientUnits="userSpaceOnUse" spreadMethod="reflect">
     <stop offset="0" stop-color="{b["name1"]}"/><stop offset="0.5" stop-color="{b["name2"]}"/><stop offset="1" stop-color="{b["name1"]}"/>
     <animate attributeName="x1" values="-340;40" dur="6s" repeatCount="indefinite"/>
     <animate attributeName="x2" values="0;380" dur="6s" repeatCount="indefinite"/>
   </linearGradient>
-  <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="40"/></filter>
-  <clipPath id="frame"><rect width="{w}" height="{h}" rx="12"/></clipPath>
 </defs>
 <style>
   text {{ font-family: {FONT}; }}
@@ -112,12 +109,6 @@ def banner_svg(days, t, b, weeks=15):
   .in {{ opacity: 0; animation: up .7s ease-out forwards; }}
   @keyframes up {{ from {{ opacity: 0; transform: translateY(8px); }} to {{ opacity: 1; transform: none; }} }}
 </style>
-<g clip-path="url(#frame)">
-  <rect width="{w}" height="{h}" fill="url(#bg)"/>
-  <circle cx="{w - 120}" cy="40" r="110" fill="{b["glow"]}" opacity="0.45" filter="url(#blur)"/>
-  <circle cx="60" cy="{h}" r="90" fill="{b["glow"]}" opacity="0.25" filter="url(#blur)"/>
-</g>
-<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="12" fill="none" stroke="{b["border"]}"/>
 <text class="in" x="40" y="58" font-size="12" font-weight="700" letter-spacing="3" fill="{b["muted"]}">HELLO, I'M</text>
 <text class="in" style="animation-delay:.1s" x="38" y="108" font-size="46" font-weight="800" letter-spacing="-1" fill="url(#nm)">Seongjun Park</text>
 <text class="in" style="animation-delay:.2s" x="40" y="140" font-size="17" fill="{b["text"]}">박성준 <tspan fill="{b["muted"]}">·</tspan> Backend Developer</text>
