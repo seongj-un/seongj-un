@@ -8,8 +8,6 @@ Backend developer and student at Daedeok Software Meister High School.
 I build APIs with Kotlin and Spring Boot, then deploy and run them myself.
 I try to fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.
 
-[Portfolio](https://seongj-un.github.io)
-
 #### Tech Stack
 
 ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
