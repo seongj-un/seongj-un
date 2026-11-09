@@ -12,7 +12,7 @@ import urllib.request
 from xml.sax.saxutils import escape
 
 LOGIN = os.environ.get("STATS_USER", "seongj-un")
-EXCLUDED_ORGS = ["team-xquare"]  # left out of every number on the cards
+EXCLUDED_ORGS = []  # orgs to leave out of the card numbers (none for now)
 EXCLUDE = "".join(f"+-org:{o}" for o in EXCLUDED_ORGS)
 OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
 TOKEN = os.environ["GITHUB_TOKEN"]
