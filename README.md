@@ -1,8 +1,7 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, Backend Developer" src="assets/header-light.svg" width="708"></picture>
 
 대덕소프트웨어마이스터고등학교에 다니는 백엔드 개발자입니다.
-Kotlin·Spring Boot로 API를 만들고, 직접 배포하고 운영하는 일까지 맡는 것을 좋아합니다.
-문제를 자원으로 덮기보다 원인부터 다시 정의하고, AI와 함께 쓴 코드도 직접 설명할 수 있을 때까지 확인합니다.
+
 
 <sub>Backend developer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
 I fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.</sub>
