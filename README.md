@@ -7,8 +7,8 @@
 I fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.</sub>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=kotlin,java,spring,python,fastapi,ts,postgres,mysql,redis,docker,kubernetes,terraform,githubactions&perline=13&theme=dark">
-  <img alt="Kotlin, Java, Spring, Python, FastAPI, TypeScript, PostgreSQL, MySQL, Redis, Docker, Kubernetes, Terraform, GitHub Actions" src="https://skillicons.dev/icons?i=kotlin,java,spring,python,fastapi,ts,postgres,mysql,redis,docker,kubernetes,terraform,githubactions&perline=13&theme=light" height="34">
+  <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=kotlin%2Cjava%2Cspring%2Cpython%2Cfastapi%2Cts%2Cpostgres%2Cmysql%2Credis%2Cdocker%2Ckubernetes%2Cterraform%2Cgithubactions&perline=13&theme=dark">
+  <img alt="Kotlin, Java, Spring, Python, FastAPI, TypeScript, PostgreSQL, MySQL, Redis, Docker, Kubernetes, Terraform, GitHub Actions" src="https://skillicons.dev/icons?i=kotlin%2Cjava%2Cspring%2Cpython%2Cfastapi%2Cts%2Cpostgres%2Cmysql%2Credis%2Cdocker%2Ckubernetes%2Cterraform%2Cgithubactions&perline=13&theme=light" height="34">
 </picture>
 
 ### Projects
