@@ -34,11 +34,8 @@ I try to fix the cause rather than throw resources at a problem, and I only ship
 - **[Louis-CFM/coucou](https://github.com/Louis-CFM/coucou)**<br>
   accept나 파이프 연결이 한 번 실패해도 훅 서버가 멈추지 않고 계속 대기하도록 수정 ([#872](https://github.com/Louis-CFM/coucou/pull/872))<br>
   Kept the hook server listening after a failed accept or pipe connect
-- **[team-xquare](https://github.com/team-xquare)** (대덕소프트웨어마이스터고 통합 인프라 · school-wide infrastructure)<br>
-  [xquare-infra-backend-v3](https://github.com/team-xquare/xquare-infra-backend-v3/pulls?q=is%3Apr+author%3Aseongj-un): 이메일 OTP 인증, 비밀번호 재설정, 아이디 찾기 · email OTP, password reset, username recovery<br>
-  [xquare-openapi-backend](https://github.com/team-xquare/xquare-openapi-backend/pulls?q=is%3Apr+author%3Aseongj-un): 회원가입, 로그인·토큰 재발급, CORS 설정 · signup, login and token reissue, CORS
 
-[전체 PR 보기 · All pull requests](https://github.com/pulls?q=is%3Apr+author%3Aseongj-un+-user%3Aseongj-un)
+[전체 PR 보기 · All pull requests](https://github.com/pulls?q=is%3Apr+author%3Aseongj-un+-user%3Aseongj-un+-org%3Ateam-xquare)
 
 #### GitHub Stats
 

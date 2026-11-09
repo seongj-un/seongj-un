@@ -12,6 +12,8 @@ import urllib.request
 from xml.sax.saxutils import escape
 
 LOGIN = os.environ.get("STATS_USER", "seongj-un")
+EXCLUDED_ORGS = ["team-xquare"]  # left out of every number on the cards
+EXCLUDE = "".join(f"+-org:{o}" for o in EXCLUDED_ORGS)
 OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
 TOKEN = os.environ["GITHUB_TOKEN"]
 
@@ -52,7 +54,11 @@ def collect():
     year = dt.datetime.now(dt.timezone.utc).year
     data = gql(
         """query($login:String!,$from:DateTime!){user(login:$login){
-          contributionsCollection(from:$from){totalCommitContributions contributionCalendar{totalContributions}}
+          contributionsCollection(from:$from){totalCommitContributions contributionCalendar{totalContributions}
+            commitContributionsByRepository(maxRepositories:100){repository{owner{login}} contributions{totalCount}}
+            pullRequestContributionsByRepository(maxRepositories:100){repository{owner{login}} contributions{totalCount}}
+            issueContributionsByRepository(maxRepositories:100){repository{owner{login}} contributions{totalCount}}
+            pullRequestReviewContributionsByRepository(maxRepositories:100){repository{owner{login}} contributions{totalCount}}}
           pullRequests{totalCount}
           repositories(ownerAffiliations:OWNER,isFork:false,privacy:PUBLIC,first:100){totalCount nodes{
             stargazerCount languages(first:20,orderBy:{field:SIZE,direction:DESC}){edges{size node{name}}}}}
@@ -60,8 +66,9 @@ def collect():
         login=LOGIN,
         **{"from": f"{year}-01-01T00:00:00Z"},
     )["user"]
-    merged = rest(f"search/issues?q=author:{LOGIN}+is:pr+is:merged&per_page=1")["total_count"]
-    external = rest(f"search/issues?q=author:{LOGIN}+is:pr+is:merged+-user:{LOGIN}&per_page=100")
+    prs = rest(f"search/issues?q=author:{LOGIN}+is:pr{EXCLUDE}&per_page=1")["total_count"]
+    merged = rest(f"search/issues?q=author:{LOGIN}+is:pr+is:merged{EXCLUDE}&per_page=1")["total_count"]
+    external = rest(f"search/issues?q=author:{LOGIN}+is:pr+is:merged+-user:{LOGIN}{EXCLUDE}&per_page=100")
     external_repos = {item["repository_url"] for item in external["items"]}
 
     langs = {}
@@ -71,12 +78,16 @@ def collect():
             if name not in SKIP_LANGS:
                 langs[name] = langs.get(name, 0) + edge["size"]
     cc = data["contributionsCollection"]
+    def excluded(key):
+        return sum(r["contributions"]["totalCount"] for r in cc[key] if r["repository"]["owner"]["login"] in EXCLUDED_ORGS)
+    commits_out = excluded("commitContributionsByRepository")
+    total_out = commits_out + sum(excluded(k) for k in ("pullRequestContributionsByRepository", "issueContributionsByRepository", "pullRequestReviewContributionsByRepository"))
     return {
         "year": year,
         "rows": [
-            (f"Contributions ({year})", cc["contributionCalendar"]["totalContributions"]),
-            (f"Commits ({year})", cc["totalCommitContributions"]),
-            ("Pull requests", data["pullRequests"]["totalCount"]),
+            (f"Contributions ({year})", cc["contributionCalendar"]["totalContributions"] - total_out),
+            (f"Commits ({year})", cc["totalCommitContributions"] - commits_out),
+            ("Pull requests", prs),
             ("Merged PRs", merged),
             ("Repos contributed to", len(external_repos)),
         ],
