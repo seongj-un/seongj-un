@@ -6,9 +6,9 @@ from xml.sax.saxutils import escape
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans',Helvetica,Arial,sans-serif"
 
 BANNER = {
-    "light": {"name1": "#5b2fd6", "name2": "#c04fd8",
+    "light": {"name1": "#5b2fd6", "title": "#1f2328",
               "text": "#3d3a4f", "muted": "#7a7590", "border": "#e2dcf5"},
-    "dark": {"name1": "#b79cff", "name2": "#ff8ad8",
+    "dark": {"name1": "#b79cff", "title": "#e6edf3",
              "text": "#e6edf3", "muted": "#9198a1", "border": "#2b2346"},
 }
 
@@ -91,11 +91,6 @@ def banner_svg(days, t, b, weeks=15):
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Seongjun Park, Backend Developer">
 <defs>
-  <linearGradient id="nm" x1="-340" y1="0" x2="0" y2="0" gradientUnits="userSpaceOnUse" spreadMethod="reflect">
-    <stop offset="0" stop-color="{b["name1"]}"/><stop offset="0.5" stop-color="{b["name2"]}"/><stop offset="1" stop-color="{b["name1"]}"/>
-    <animate attributeName="x1" values="-340;40" dur="6s" repeatCount="indefinite"/>
-    <animate attributeName="x2" values="0;380" dur="6s" repeatCount="indefinite"/>
-  </linearGradient>
 </defs>
 <style>
   text {{ font-family: {FONT}; }}
@@ -110,10 +105,10 @@ def banner_svg(days, t, b, weeks=15):
   @keyframes up {{ from {{ opacity: 0; transform: translateY(8px); }} to {{ opacity: 1; transform: none; }} }}
 </style>
 <text class="in" x="40" y="58" font-size="12" font-weight="700" letter-spacing="3" fill="{b["muted"]}">HELLO, I'M</text>
-<text class="in" style="animation-delay:.1s" x="38" y="108" font-size="46" font-weight="800" letter-spacing="-1" fill="url(#nm)">Seongjun Park</text>
+<text class="in" style="animation-delay:.1s" x="38" y="108" font-size="46" font-weight="800" letter-spacing="-1" fill="{b["title"]}">Seongjun Park</text>
 <text class="in" style="animation-delay:.2s" x="40" y="140" font-size="17" fill="{b["text"]}">박성준 <tspan fill="{b["muted"]}">·</tspan> Backend Developer</text>
 {roles}
-<rect class="cur" x="40" y="186" width="44" height="2" rx="1" fill="{b["name2"]}"/>
+<rect class="cur" x="40" y="186" width="44" height="2" rx="1" fill="{b["name1"]}"/>
 <text x="40" y="210" font-size="11" fill="{b["muted"]}">Daedeok Software Meister High School</text>
 {grid}
 <text x="{w - 36}" y="{gy + 7 * (cell + gap) + 14}" font-size="11" fill="{b["muted"]}" text-anchor="end">contributions, last {weeks} weeks</text>
@@ -131,10 +126,8 @@ def project_svg(p, t, b, w=350, h=168):
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{escape(p["name"])}">'
         f'<style>text{{font-family:{FONT}}}</style>'
-        f'<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{b["name1"]}"/>'
-        f'<stop offset="1" stop-color="{b["name2"]}"/></linearGradient></defs>'
         f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="10" fill="{t["bg"]}" stroke="{t["border"]}"/>'
-        f'<rect x="24" y="0.5" width="60" height="3" rx="1.5" fill="url(#g)"/>'
+        f'<rect x="24" y="0.5" width="60" height="3" rx="1.5" fill="{b["name1"]}"/>'
         f'<text x="24" y="38" font-size="16" font-weight="700" fill="{t["title"]}">{escape(p["name"])}</text>'
         f'<text x="{w - 24}" y="38" font-size="15" fill="{t["text"]}" text-anchor="end">&#8599;</text>'
         f'{ko}'
