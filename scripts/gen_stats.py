@@ -25,6 +25,7 @@ LANG_COLORS = {
     "Java": "#b07219", "Dart": "#00B4AB", "Go": "#00ADD8", "Swift": "#F05138", "HCL": "#844FBA",
     "HTML": "#e34c26", "CSS": "#563d7c", "Shell": "#89e051", "Dockerfile": "#384d54",
 }
+CARD_H = 200  # both cards share a height so they line up side by side
 SKIP_LANGS = {"HTML", "CSS", "Dockerfile", "Mako", "Shell", "Go Template"}  # markup/config, not code I write
 
 
@@ -100,7 +101,7 @@ def stats_svg(s, t):
             f'<text x="24" y="{y}" font-size="13" fill="{t["text"]}">{escape(label)}</text>'
             f'<text x="326" y="{y}" font-size="13" font-weight="600" fill="{t["value"]}" text-anchor="end">{value:,}</text>'
         )
-    return card(350, 70 + len(s["rows"]) * 26, "GitHub Stats", body, t)
+    return card(350, CARD_H, "Activity", body, t)
 
 
 def langs_svg(s, t, top=6):
@@ -125,8 +126,7 @@ def langs_svg(s, t, top=6):
             f'<text x="{cx + 16}" y="{cy}" font-size="13" fill="{t["text"]}">{escape(name)} '
             f'<tspan fill="{t["value"]}" font-weight="600">{size / total * 100:.1f}%</tspan></text>'
         )
-    rows = (len(langs) + 1) // 2
-    return card(350, 76 + rows * 24, "Most Used Languages", body, t)
+    return card(350, CARD_H, "Most Used Languages", body, t)
 
 
 def main():
