@@ -18,10 +18,10 @@ OUT = pathlib.Path(__file__).resolve().parent.parent / "assets"
 TOKEN = os.environ["GITHUB_TOKEN"]
 
 THEMES = {
-    "light": {"bg": "#ffffff", "border": "#d0d7de", "title": "#1f2328", "text": "#59636e", "value": "#1f2328", "track": "#eff2f5"},
-    "dark": {"bg": "#0d1117", "border": "#30363d", "title": "#e6edf3", "text": "#9198a1", "value": "#e6edf3", "track": "#21262d"},
+    "light": {"bg": "#ffffff", "border": "#d0d7de", "title": "#1f2328", "text": "#59636e", "value": "#1f2328", "track": "#eff2f5", "accent": "#7f52ff", "grid": ["#eff2f5", "#d8ccff", "#b39dff", "#8f6bff", "#6a3fe0"]},
+    "dark": {"bg": "#0d1117", "border": "#30363d", "title": "#e6edf3", "text": "#9198a1", "value": "#e6edf3", "track": "#21262d", "accent": "#a98bff", "grid": ["#161b22", "#2e2457", "#4a3591", "#6d4fd1", "#a98bff"]},
 }
-FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif"
+FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans',Helvetica,Arial,sans-serif"
 LANG_COLORS = {
     "Kotlin": "#A97BFF", "Python": "#3572A5", "TypeScript": "#3178c6", "JavaScript": "#f1e05a",
     "Java": "#b07219", "Dart": "#00B4AB", "Go": "#00ADD8", "Swift": "#F05138", "HCL": "#844FBA",
@@ -48,6 +48,55 @@ def rest(path):
     req = urllib.request.Request(f"https://api.github.com/{path}", headers={"Authorization": f"bearer {TOKEN}"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.load(resp)
+
+
+def calendar_days():
+    """Every contribution day since the account was created, oldest first."""
+    created = gql("query($login:String!){user(login:$login){createdAt}}", login=LOGIN)["user"]["createdAt"]
+    start = dt.datetime.fromisoformat(created.replace("Z", "+00:00"))
+    now = dt.datetime.now(dt.timezone.utc)
+    days = []
+    while start < now:
+        end = min(start + dt.timedelta(days=365), now)
+        weeks = gql(
+            """query($login:String!,$from:DateTime!,$to:DateTime!){user(login:$login){
+              contributionsCollection(from:$from,to:$to){contributionCalendar{weeks{contributionDays{date contributionCount}}}}}}""",
+            login=LOGIN,
+            **{"from": start.isoformat(), "to": end.isoformat()},
+        )["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]
+        for week in weeks:
+            days += [(d["date"], d["contributionCount"]) for d in week["contributionDays"]]
+        start = end
+    seen, out = set(), []
+    for date, count in sorted(days):
+        if date not in seen:
+            seen.add(date)
+            out.append((date, count))
+    return out
+
+
+def streaks(days):
+    longest = run = 0
+    for _, count in days:
+        run = run + 1 if count else 0
+        longest = max(longest, run)
+    current = 0
+    tail = days[:-1] if days and days[-1][1] == 0 else days  # today not over yet
+    for _, count in reversed(tail):
+        if not count:
+            break
+        current += 1
+    return current, longest
+
+
+def highlights(days, current, longest):
+    months = {}
+    for date, count in days:
+        months[date[:7]] = months.get(date[:7], 0) + count
+    best_day = max(days, key=lambda d: d[1])
+    best_month = max(months.items(), key=lambda m: m[1])
+    return {"total": sum(c for _, c in days), "since": days[0][0], "current": current, "longest": longest,
+            "best_day": best_day, "best_month": best_month}
 
 
 def collect():
@@ -82,8 +131,12 @@ def collect():
         return sum(r["contributions"]["totalCount"] for r in cc[key] if r["repository"]["owner"]["login"] in EXCLUDED_ORGS)
     commits_out = excluded("commitContributionsByRepository")
     total_out = commits_out + sum(excluded(k) for k in ("pullRequestContributionsByRepository", "issueContributionsByRepository", "pullRequestReviewContributionsByRepository"))
+    days = calendar_days()
+    current, longest = streaks(days)
     return {
         "year": year,
+        "days": days,
+        "streak": highlights(days, current, longest),
         "rows": [
             (f"Contributions ({year})", cc["contributionCalendar"]["totalContributions"] - total_out),
             (f"Commits ({year})", cc["totalCommitContributions"] - commits_out),
@@ -100,7 +153,8 @@ def card(width, height, title, body, t):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
         f'role="img" aria-label="{escape(title)}"><style>text{{font-family:{FONT}}}</style>'
         f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="6" fill="{t["bg"]}" stroke="{t["border"]}"/>'
-        f'<text x="24" y="36" font-size="15" font-weight="600" fill="{t["title"]}">{escape(title)}</text>{body}</svg>'
+        f'<rect x="24" y="24" width="3" height="16" rx="1.5" fill="{t["accent"]}"/>'
+        f'<text x="35" y="37" font-size="15" font-weight="600" fill="{t["title"]}">{escape(title)}</text>{body}</svg>'
     )
 
 
@@ -140,13 +194,74 @@ def langs_svg(s, t, top=6):
     return card(350, CARD_H, "Most Used Languages", body, t)
 
 
+def level(count, cuts):
+    return 0 if count == 0 else 1 + sum(count > c for c in cuts)
+
+
+def banner_svg(s, t, weeks=22):
+    w, h = 708, 190
+    days = s["days"][-(weeks * 7):]
+    nonzero = sorted(c for _, c in days if c)
+    cuts = [nonzero[int(len(nonzero) * q)] for q in (0.25, 0.5, 0.75)] if nonzero else [1, 2, 3]
+    first = dt.date.fromisoformat(days[0][0]).weekday() if days else 0
+    offset = (first + 1) % 7  # GitHub columns start on Sunday
+    cell, gap = 11, 3
+    gx = w - 28 - weeks * (cell + gap) + gap
+    grid = ""
+    for i, (date, count) in enumerate(days):
+        col, row = divmod(i + offset, 7)
+        if col >= weeks:
+            break
+        grid += (f'<rect x="{gx + col * (cell + gap)}" y="{44 + row * (cell + gap)}" width="{cell}" height="{cell}" rx="2" '
+                 f'fill="{t["grid"][level(count, cuts)]}"><title>{date}: {count}</title></rect>')
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Seongjun Park">'
+        f'<style>text{{font-family:{FONT}}}</style>'
+        f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="8" fill="{t["bg"]}" stroke="{t["border"]}"/>'
+        f'<rect x="28" y="44" width="4" height="98" rx="2" fill="{t["accent"]}"/>'
+        f'<text x="48" y="74" font-size="30" font-weight="700" fill="{t["title"]}">Seongjun Park</text>'
+        f'<text x="48" y="102" font-size="16" fill="{t["text"]}">박성준 <tspan fill="{t["border"]}">/</tspan> Backend Developer</text>'
+        f'<text x="48" y="138" font-size="13" fill="{t["text"]}">Kotlin · Spring Boot · FastAPI · Kubernetes</text>'
+        f'{grid}'
+        f'<text x="{w - 28}" y="160" font-size="11" fill="{t["text"]}" text-anchor="end">last {weeks} weeks</text>'
+        f'</svg>'
+    )
+
+
+def streak_svg(s, t):
+    w, h = 708, 130
+    st = s["streak"]
+    cols = [
+        (f'{st["total"]:,}', "Total contributions", f'since {st["since"][:7]}'),
+        (f'{st["best_month"][1]:,}', "Busiest month", dt.date.fromisoformat(st["best_month"][0] + "-01").strftime("%b %Y")),
+        (f'{st["best_day"][1]:,}', "Busiest day", dt.date.fromisoformat(st["best_day"][0]).strftime("%b %d, %Y")),
+        (f'{st["longest"]}', "Longest streak", "days in a row"),
+    ]
+    body, cw = "", w / len(cols)
+    for i, (value, label, sub) in enumerate(cols):
+        cx = cw * i + cw / 2
+        color = t["accent"] if i == 1 else t["value"]
+        body += (f'<text x="{cx:.1f}" y="58" font-size="26" font-weight="700" fill="{color}" text-anchor="middle">{value}</text>'
+                 f'<text x="{cx:.1f}" y="84" font-size="13" font-weight="600" fill="{t["title"]}" text-anchor="middle">{label}</text>'
+                 f'<text x="{cx:.1f}" y="104" font-size="11" fill="{t["text"]}" text-anchor="middle">{sub}</text>')
+        if i:
+            body += f'<line x1="{cw * i:.1f}" y1="30" x2="{cw * i:.1f}" y2="104" stroke="{t["border"]}"/>'
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Contribution highlights">'
+        f'<style>text{{font-family:{FONT}}}</style>'
+        f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="6" fill="{t["bg"]}" stroke="{t["border"]}"/>{body}</svg>'
+    )
+
+
 def main():
     s = collect()
     OUT.mkdir(exist_ok=True)
     for theme, t in THEMES.items():
         (OUT / f"stats-{theme}.svg").write_text(stats_svg(s, t), encoding="utf-8")
         (OUT / f"langs-{theme}.svg").write_text(langs_svg(s, t), encoding="utf-8")
-    print(json.dumps({"rows": s["rows"], "langs": s["langs"][:8]}, ensure_ascii=False))
+        (OUT / f"banner-{theme}.svg").write_text(banner_svg(s, t), encoding="utf-8")
+        (OUT / f"highlights-{theme}.svg").write_text(streak_svg(s, t), encoding="utf-8")
+    print(json.dumps({"rows": s["rows"], "streak": s["streak"], "langs": s["langs"][:6]}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
