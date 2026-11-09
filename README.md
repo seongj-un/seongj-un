@@ -17,6 +17,21 @@ Kotlin·Spring Boot로 API를 만들고, 직접 배포하고 운영하는 일까
 
 <br>
 
+### Featured Projects
+
+<div align="center">
+<a href="https://github.com/farero-dev/farero-dev.github.io"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-farero-dark.svg"><img alt="farero" src="assets/project-farero-light.svg" width="350"></picture></a>
+<a href="https://github.com/seongj-un/hermes-headroom"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-hermes-headroom-dark.svg"><img alt="hermes-headroom" src="assets/project-hermes-headroom-light.svg" width="350"></picture></a>
+<br>
+<a href="https://github.com/seongj-un/ev-charge-time"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-ev-charge-time-dark.svg"><img alt="ev-charge-time" src="assets/project-ev-charge-time-light.svg" width="350"></picture></a>
+<a href="https://github.com/seongj-un/duri"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-pairpay-dark.svg"><img alt="PairPay" src="assets/project-pairpay-light.svg" width="350"></picture></a>
+<br>
+<a href="https://github.com/seongj-un/dev-ops-study"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-dev-ops-study-dark.svg"><img alt="dev-ops-study" src="assets/project-dev-ops-study-light.svg" width="350"></picture></a>
+<a href="https://github.com/seongj-un/n8n-obsidian-rag"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/project-n8n-obsidian-rag-dark.svg"><img alt="n8n-obsidian-rag" src="assets/project-n8n-obsidian-rag-light.svg" width="350"></picture></a>
+</div>
+
+<br>
+
 ### Tech Stack
 
 | Area | Stack |

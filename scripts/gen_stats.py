@@ -11,6 +11,8 @@ import pathlib
 import urllib.request
 from xml.sax.saxutils import escape
 
+import visuals
+
 LOGIN = os.environ.get("STATS_USER", "seongj-un")
 EXCLUDED_ORGS = []  # orgs to leave out of the card numbers (none for now)
 EXCLUDE = "".join(f"+-org:{o}" for o in EXCLUDED_ORGS)
@@ -194,40 +196,6 @@ def langs_svg(s, t, top=6):
     return card(350, CARD_H, "Most Used Languages", body, t)
 
 
-def level(count, cuts):
-    return 0 if count == 0 else 1 + sum(count > c for c in cuts)
-
-
-def banner_svg(s, t, weeks=22):
-    w, h = 708, 190
-    days = s["days"][-(weeks * 7):]
-    nonzero = sorted(c for _, c in days if c)
-    cuts = [nonzero[int(len(nonzero) * q)] for q in (0.25, 0.5, 0.75)] if nonzero else [1, 2, 3]
-    first = dt.date.fromisoformat(days[0][0]).weekday() if days else 0
-    offset = (first + 1) % 7  # GitHub columns start on Sunday
-    cell, gap = 11, 3
-    gx = w - 28 - weeks * (cell + gap) + gap
-    grid = ""
-    for i, (date, count) in enumerate(days):
-        col, row = divmod(i + offset, 7)
-        if col >= weeks:
-            break
-        grid += (f'<rect x="{gx + col * (cell + gap)}" y="{44 + row * (cell + gap)}" width="{cell}" height="{cell}" rx="2" '
-                 f'fill="{t["grid"][level(count, cuts)]}"><title>{date}: {count}</title></rect>')
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Seongjun Park">'
-        f'<style>text{{font-family:{FONT}}}</style>'
-        f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="8" fill="{t["bg"]}" stroke="{t["border"]}"/>'
-        f'<rect x="28" y="44" width="4" height="98" rx="2" fill="{t["accent"]}"/>'
-        f'<text x="48" y="74" font-size="30" font-weight="700" fill="{t["title"]}">Seongjun Park</text>'
-        f'<text x="48" y="102" font-size="16" fill="{t["text"]}">박성준 <tspan fill="{t["border"]}">/</tspan> Backend Developer</text>'
-        f'<text x="48" y="138" font-size="13" fill="{t["text"]}">Kotlin · Spring Boot · FastAPI · Kubernetes</text>'
-        f'{grid}'
-        f'<text x="{w - 28}" y="160" font-size="11" fill="{t["text"]}" text-anchor="end">last {weeks} weeks</text>'
-        f'</svg>'
-    )
-
-
 def streak_svg(s, t):
     w, h = 708, 130
     st = s["streak"]
@@ -259,7 +227,9 @@ def main():
     for theme, t in THEMES.items():
         (OUT / f"stats-{theme}.svg").write_text(stats_svg(s, t), encoding="utf-8")
         (OUT / f"langs-{theme}.svg").write_text(langs_svg(s, t), encoding="utf-8")
-        (OUT / f"banner-{theme}.svg").write_text(banner_svg(s, t), encoding="utf-8")
+        (OUT / f"banner-{theme}.svg").write_text(visuals.banner_svg(s["days"], t, visuals.BANNER[theme]), encoding="utf-8")
+        for p in visuals.PROJECTS:
+            (OUT / f"project-{p['name'].lower()}-{theme}.svg").write_text(visuals.project_svg(p, t, visuals.BANNER[theme]), encoding="utf-8")
         (OUT / f"highlights-{theme}.svg").write_text(streak_svg(s, t), encoding="utf-8")
     print(json.dumps({"rows": s["rows"], "streak": s["streak"], "langs": s["langs"][:6]}, ensure_ascii=False))
 
