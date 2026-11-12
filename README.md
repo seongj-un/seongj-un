@@ -1,7 +1,7 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, 5x Engineer" src="assets/header-light.svg" width="708"></picture>
 
-<sub>5x engineer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
-I fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.</sub>
+5x engineer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
+I fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=kotlin%2Cjava%2Cspring%2Cpython%2Cfastapi%2Cts%2Cpostgres%2Cmysql%2Credis%2Cdocker%2Ckubernetes%2Cterraform%2Cgithubactions&perline=13&theme=dark">
