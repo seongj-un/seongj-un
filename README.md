@@ -1,4 +1,4 @@
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, Backend Developer" src="assets/header-light.svg" width="708"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, 5x enginner" src="assets/header-light.svg" width="708"></picture>
 
 대덕소프트웨어마이스터고등학교에 다니는 백엔드 개발자입니다.
 
