@@ -50,9 +50,9 @@ PROJECTS = [
 def header_svg(t, theme, w=708, h=120):
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" '
-        f'aria-label="Seongjun Park, Backend Developer"><style>text{{font-family:{FONT}}}</style>'
+        f'aria-label="Seongjun Park, 5x Engineer"><style>text{{font-family:{FONT}}}</style>'
         f'<text x="0" y="52" font-size="38" font-weight="700" letter-spacing="-1" fill="{t["title"]}">Seongjun Park</text>'
-        f'<text x="2" y="86" font-size="16" fill="{t["text"]}">박성준  ·  Backend Developer  ·  Daedeok Software Meister High School</text>'
+        f'<text x="2" y="86" font-size="16" fill="{t["text"]}">박성준  ·  5x Engineer  ·  Daedeok Software Meister High School</text>'
         f'<rect x="2" y="104" width="40" height="3" rx="1.5" fill="{LINK[theme]}"/></svg>'
     )
 

@@ -1,6 +1,6 @@
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, 5x enginner" src="assets/header-light.svg" width="708"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg"><img alt="Seongjun Park, 5x Engineer" src="assets/header-light.svg" width="708"></picture>
 
-대덕소프트웨어마이스터고등학교에 다니는 백엔드 개발자입니다.
+대덕소프트웨어마이스터고등학교에 다니는 5x 엔지니어입니다.
 
 
 <sub>5x engineer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
