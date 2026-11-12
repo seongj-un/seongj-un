@@ -3,7 +3,7 @@
 대덕소프트웨어마이스터고등학교에 다니는 백엔드 개발자입니다.
 
 
-<sub>Backend developer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
+<sub>5x engineer at Daedeok Software Meister High School. I build APIs, then deploy and run them myself.
 I fix the cause rather than throw resources at a problem, and I only ship code I can explain, even when an AI helped write it.</sub>
 
 <picture>
