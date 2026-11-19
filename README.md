@@ -33,7 +33,7 @@ I fix the cause rather than throw resources at a problem, and I only ship code I
 ### GitHub Stats
 
 <div align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/highlights-dark.svg"><img alt="Contribution highlights" src="assets/highlights-light.svg" width="708"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/highlights-dark.svg"><img alt="Contribution highlights" src="assets/highlights-light.svg" width="707"></picture>
 <br>
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/stats-dark.svg"><img alt="GitHub Stats" src="assets/stats-light.svg" width="350"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/langs-dark.svg"><img alt="Most Used Languages" src="assets/langs-light.svg" width="350"></picture>
